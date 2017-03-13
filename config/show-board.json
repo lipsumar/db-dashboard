@@ -1,0 +1,26 @@
+title: hi honey
+vars:
+  show_id:
+cards:
+  - title: Stands
+    query: |
+      select s.uid, s.stand_name
+      from tx_ef_stand s
+      join tx_ef_booking b on b.uid=s.booking_id
+      where b.show_id=$show_id
+  - title: Touches
+    query: |
+      SELECT u.username,visitor_code, s.stand_name, stand_id
+      FROM tx_ef_domain_model_touch t
+      join tx_ef_dude d on t.dude_id=d.uid
+      join fe_users u on u.uid=d.fe_user_id
+      join tx_ef_stand s on s.uid=t.stand_id
+      where show_id=$show_id
+  - title: Exhibitor languages
+    query: |
+      select count(*) as num,IF(sl.title!='', sl.title, 'English') as lang
+      from tx_ef_exhibitor e
+      join tx_ef_booking b on b.exhibitor_id=e.uid
+      left join sys_language sl on sl.uid=e.language_from_nav
+      where b.show_id = 3261
+      group by e.language_from_nav
